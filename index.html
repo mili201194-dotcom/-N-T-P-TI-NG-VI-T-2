@@ -1,0 +1,1265 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vui Học Tiếng Việt Lớp 2 - Từ Chỉ Hoạt Động & Câu Ai Làm Gì?</title>
+    <!-- Tải Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Tải Google Fonts: Quicksand & Nunito thân thiện với học sinh tiểu học -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
+    <!-- Tải Canvas Confetti cho hiệu ứng pháo hoa chúc mừng -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        body {
+            font-family: 'Quicksand', sans-serif;
+            background: linear-gradient(135deg, #ECFDF5 0%, #EFF6FF 50%, #FFFBEB 100%);
+            min-height: 100vh;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+        h1, h2, h3, .font-display {
+            font-family: 'Nunito', sans-serif;
+        }
+        /* Hiệu ứng nút bấm nổi 3D vui nhộn */
+        .btn-3d {
+            transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 5px 0 rgba(0, 0, 0, 0.16);
+        }
+        .btn-3d:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 7px 0 rgba(0, 0, 0, 0.16);
+        }
+        .btn-3d:active {
+            transform: translateY(3px);
+            box-shadow: 0 2px 0 rgba(0, 0, 0, 0.16);
+        }
+        /* Hiệu ứng rung khi trả lời sai */
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-8px); }
+            40%, 80% { transform: translateX(8px); }
+        }
+        .animate-shake {
+            animation: shake 0.4s ease-in-out;
+        }
+        /* Hiệu ứng nảy lên khi xuất hiện */
+        @keyframes popIn {
+            0% { transform: scale(0.85); opacity: 0; }
+            70% { transform: scale(1.04); opacity: 1; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        .animate-pop {
+            animation: popIn 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+        /* Hiệu ứng lơ lửng nhẹ */
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-6px); }
+        }
+        .animate-float {
+            animation: float 3s ease-in-out infinite;
+        }
+        /* Vùng kéo thả */
+        .drop-zone-active {
+            transform: scale(1.03);
+            border-style: solid !important;
+            box-shadow: 0 0 22px rgba(16, 185, 129, 0.35);
+        }
+    </style>
+</head>
+<body class="text-slate-800 flex flex-col justify-between">
+
+    <!-- Thanh điều hướng phía trên -->
+    <header class="bg-white/90 backdrop-blur-md shadow-sm sticky top-0 z-40 border-b-4 border-emerald-200">
+        <div class="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between">
+            <button onclick="navigateTo('home')" class="flex items-center gap-2.5 sm:gap-3 text-left group focus:outline-none">
+                <div class="w-11 h-11 sm:w-12 sm:h-12 bg-gradient-to-br from-emerald-400 to-teal-500 rounded-2xl flex items-center justify-center text-2xl sm:text-3xl shadow-md group-hover:rotate-6 transition-transform">
+                    🏃‍♂️
+                </div>
+                <div>
+                    <h1 class="font-display font-black text-lg sm:text-2xl text-emerald-700 leading-tight">Vui Học Tiếng Việt 2</h1>
+                    <p class="text-xs sm:text-sm font-semibold text-sky-600">Từ chỉ hoạt động & Câu "Ai làm gì?"</p>
+                </div>
+            </button>
+
+            <div class="flex items-center gap-2 sm:gap-3">
+                <!-- Hiển thị tổng sao tích lũy -->
+                <div class="bg-amber-100 border-2 border-amber-300 px-3 py-1.5 rounded-full flex items-center gap-1.5 shadow-inner">
+                    <span class="text-lg sm:text-xl">⭐</span>
+                    <span id="total-stars" class="font-display font-extrabold text-amber-700 text-base sm:text-lg">0</span>
+                </div>
+                <!-- Nút bật/tắt âm thanh -->
+                <button id="sound-toggle" onclick="toggleSound()" title="Bật/Tắt âm thanh" class="w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-emerald-100 hover:bg-emerald-200 text-emerald-700 flex items-center justify-center text-xl transition-colors border-2 border-emerald-300">
+                    🔊
+                </button>
+                <!-- Nút về trang chủ -->
+                <button id="home-btn" onclick="navigateTo('home')" class="hidden bg-rose-500 hover:bg-rose-600 text-white font-bold px-3 sm:px-4 py-2 rounded-2xl text-sm sm:text-base btn-3d flex items-center gap-1">
+                    <span>🏠</span> <span class="hidden sm:inline">Trang chủ</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Khu vực nội dung chính -->
+    <main id="app-container" class="flex-grow max-w-5xl w-full mx-auto px-4 py-6 sm:py-8">
+        <!-- Nội dung từng màn hình sẽ được render tại đây -->
+    </main>
+
+    <!-- Hộp thoại thông báo tùy chỉnh (thay thế alert) -->
+    <div id="custom-modal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 hidden items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-md w-full p-6 text-center shadow-2xl border-4 border-emerald-300 animate-pop">
+            <div id="modal-emoji" class="text-6xl mb-3">🎉</div>
+            <h3 id="modal-title" class="font-display font-extrabold text-2xl text-slate-800 mb-2">Thông báo</h3>
+            <p id="modal-message" class="text-slate-600 font-medium text-base mb-6">Nội dung thông báo</p>
+            <button onclick="closeModal()" class="w-full py-3 bg-emerald-500 hover:bg-emerald-600 text-white font-display font-bold text-lg rounded-2xl btn-3d">
+                Đồng ý! 👍
+            </button>
+        </div>
+    </div>
+
+    <!-- Chân trang -->
+    <footer class="text-center py-4 text-slate-500 text-xs sm:text-sm font-semibold">
+        🌟 Bé chăm ngoan học giỏi • Ôn tập Tiếng Việt Lớp 2 🌟
+    </footer>
+
+    <script>
+        /* ==========================================================================
+           1. HỆ THỐNG ÂM THANH VUI NHỘN (WEB AUDIO API - KHÔNG CẦN FILE NGOÀI)
+           ========================================================================== */
+        let audioCtx = null;
+        let soundEnabled = true;
+
+        function initAudio() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+        }
+
+        function toggleSound() {
+            soundEnabled = !soundEnabled;
+            const btn = document.getElementById('sound-toggle');
+            btn.textContent = soundEnabled ? '🔊' : '🔇';
+            if (soundEnabled) {
+                initAudio();
+                playClickSound();
+            }
+        }
+
+        function playTone(freq, type, duration, startTime = 0, vol = 0.15) {
+            if (!soundEnabled) return;
+            try {
+                initAudio();
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = type;
+                osc.frequency.setValueAtTime(freq, audioCtx.currentTime + startTime);
+                gain.gain.setValueAtTime(vol, audioCtx.currentTime + startTime);
+                gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + startTime + duration);
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start(audioCtx.currentTime + startTime);
+                osc.stop(audioCtx.currentTime + startTime + duration);
+            } catch (e) {
+                // Bỏ qua nếu trình duyệt chặn autoplay
+            }
+        }
+
+        function playClickSound() {
+            playTone(540, 'sine', 0.08, 0, 0.1);
+        }
+
+        function playCorrectSound() {
+            playTone(523.25, 'triangle', 0.15, 0, 0.18);
+            playTone(659.25, 'triangle', 0.15, 0.08, 0.18);
+            playTone(783.99, 'triangle', 0.15, 0.16, 0.18);
+            playTone(1046.50, 'triangle', 0.35, 0.24, 0.2);
+        }
+
+        function playWrongSound() {
+            playTone(260, 'sawtooth', 0.18, 0, 0.12);
+            playTone(210, 'sawtooth', 0.28, 0.14, 0.12);
+        }
+
+        function playVictorySound() {
+            const notes = [523.25, 659.25, 783.99, 1046.50, 783.99, 1046.50];
+            const times = [0, 0.12, 0.24, 0.36, 0.52, 0.66];
+            notes.forEach((n, i) => playTone(n, 'triangle', 0.25, times[i], 0.2));
+        }
+
+        function triggerConfetti() {
+            if (typeof confetti === 'function') {
+                confetti({
+                    particleCount: 70,
+                    spread: 75,
+                    origin: { y: 0.65 }
+                });
+            }
+        }
+
+        /* ==========================================================================
+           2. KHO DỮ LIỆU KIẾN THỨC TIẾNG VIỆT LỚP 2 (TỪ CHỈ HOẠT ĐỘNG & AI LÀM GÌ?)
+           ========================================================================== */
+        // Ví dụ từ chỉ hoạt động trong Góc Ôn Tập
+        const ACTION_EXAMPLES = [
+            { word: 'đi', icon: '🚶' },
+            { word: 'chạy', icon: '🏃' },
+            { word: 'nhảy', icon: '🤸' },
+            { word: 'đọc', icon: '📖' },
+            { word: 'viết', icon: '✍️' },
+            { word: 'nói', icon: '🗣️' },
+            { word: 'cười', icon: '😄' },
+            { word: 'quét nhà', icon: '🧹' },
+            { word: 'tưới cây', icon: '🪴' },
+            { word: 'bay', icon: '🕊️' },
+            { word: 'bơi', icon: '🏊' }
+        ];
+
+        // 2 Giỏ phân loại cho Thử thách 1
+        const BASKETS = [
+            {
+                id: 'action',
+                name: 'Từ chỉ hoạt động',
+                desc: 'Chỉ sự vận động, việc làm nhìn thấy được',
+                icon: '🏃‍♂️',
+                color: 'bg-emerald-100 border-emerald-400 text-emerald-900'
+            },
+            {
+                id: 'noun',
+                name: 'Từ chỉ sự vật',
+                desc: 'Chỉ người, đồ vật, con vật, cây cối',
+                icon: '🎒',
+                color: 'bg-sky-100 border-sky-400 text-sky-900'
+            }
+        ];
+
+        // Kho từ vựng cho Thử thách 1 (Phân biệt Từ chỉ hoạt động vs Từ chỉ sự vật)
+        const WORD_SORT_POOL = [
+            // Từ chỉ hoạt động
+            { word: 'chạy', emoji: '🏃', type: 'action', reason: '"chạy" chỉ hoạt động di chuyển nhanh của người hoặc vật.' },
+            { word: 'nhảy', emoji: '🤸', type: 'action', reason: '"nhảy" chỉ hoạt động bật người lên khỏi mặt đất.' },
+            { word: 'đọc', emoji: '📖', type: 'action', reason: '"đọc" chỉ hoạt động xem và phát âm chữ.' },
+            { word: 'viết', emoji: '✍️', type: 'action', reason: '"viết" chỉ hoạt động dùng bút tạo ra chữ.' },
+            { word: 'quét nhà', emoji: '🧹', type: 'action', reason: '"quét nhà" chỉ việc làm dọn dẹp nhà cửa.' },
+            { word: 'tưới cây', emoji: '🚿', type: 'action', reason: '"tưới cây" chỉ hành động chăm sóc cây cối.' },
+            { word: 'bay', emoji: '🕊️', type: 'action', reason: '"bay" chỉ sự vận động di chuyển trên không trung.' },
+            { word: 'bơi', emoji: '🏊', type: 'action', reason: '"bơi" chỉ sự vận động di chuyển dưới nước.' },
+            { word: 'cười', emoji: '😄', type: 'action', reason: '"cười" chỉ hoạt động biểu lộ niềm vui trên khuôn mặt.' },
+            { word: 'nói', emoji: '🗣️', type: 'action', reason: '"nói" chỉ hoạt động phát ra lời nói.' },
+            { word: 'đi', emoji: '🚶', type: 'action', reason: '"đi" chỉ hoạt động di chuyển bằng chân.' },
+            // Từ chỉ sự vật
+            { word: 'bàn ghế', emoji: '🪑', type: 'noun', reason: '"bàn ghế" là từ chỉ đồ vật.' },
+            { word: 'học sinh', emoji: '🎒', type: 'noun', reason: '"học sinh" là từ chỉ con người.' },
+            { word: 'chú mèo', emoji: '🐈', type: 'noun', reason: '"chú mèo" là từ chỉ con vật.' },
+            { word: 'cây bàng', emoji: '🌳', type: 'noun', reason: '"cây bàng" là từ chỉ cây cối.' },
+            { word: 'quyển sách', emoji: '📚', type: 'noun', reason: '"quyển sách" là từ chỉ đồ vật.' },
+            { word: 'cô giáo', emoji: '👩‍🏫', type: 'noun', reason: '"cô giáo" là từ chỉ con người.' },
+            { word: 'đàn chim', emoji: '🐦', type: 'noun', reason: '"đàn chim" là từ chỉ con vật.' },
+            { word: 'hoa hồng', emoji: '🌹', type: 'noun', reason: '"hoa hồng" là từ chỉ cây cối.' }
+        ];
+
+        // Dữ liệu Thử thách 2: Chuyên gia câu "Ai làm gì?" (Phần A: Điền từ & Phần B: Ghép mảnh từ)
+        const SENTENCE_CHALLENGES = [
+            {
+                type: 'fill',
+                prompt: 'Chọn từ chỉ hoạt động thích hợp điền vào chỗ trống:',
+                sentenceBefore: 'Đàn chim đang',
+                sentenceAfter: 'về phương nam.',
+                options: [
+                    { text: 'bay', isCorrect: true },
+                    { text: 'cây bàng', isCorrect: false },
+                    { text: 'xinh đẹp', isCorrect: false }
+                ],
+                explanation: '"bay" là từ chỉ hoạt động của đàn chim.'
+            },
+            {
+                type: 'arrange',
+                prompt: 'Sắp xếp các mảnh từ thành câu nêu hoạt động hoàn chỉnh:',
+                hint: 'Kể về việc bé làm giúp mẹ ở nhà',
+                pieces: ['Bé', 'đang quét nhà', 'giúp mẹ.'],
+                correctSentence: 'Bé đang quét nhà giúp mẹ.'
+            },
+            {
+                type: 'fill',
+                prompt: 'Điền từ chỉ hoạt động để hoàn thành câu kể về việc làm của bạn Lan:',
+                sentenceBefore: 'Bạn Lan đang',
+                sentenceAfter: 'ngoài vườn.',
+                options: [
+                    { text: 'bút chì', isCorrect: false },
+                    { text: 'tưới cây', isCorrect: true },
+                    { text: 'bác sĩ', isCorrect: false }
+                ],
+                explanation: '"tưới cây" là từ chỉ hoạt động chăm sóc cây của bạn Lan.'
+            },
+            {
+                type: 'arrange',
+                prompt: 'Ghép các thẻ từ để tạo câu nêu hoạt động "Ai làm gì?":',
+                hint: 'Kể về hoạt động của đàn chim',
+                pieces: ['Đàn chim', 'đang bay', 'về phương nam.'],
+                correctSentence: 'Đàn chim đang bay về phương nam.'
+            },
+            {
+                type: 'fill',
+                prompt: 'Chọn từ chỉ hoạt động phù hợp với câu sau:',
+                sentenceBefore: 'Trong giờ Tập viết, các bạn học sinh chăm chú',
+                sentenceAfter: 'bài.',
+                options: [
+                    { text: 'viết', isCorrect: true },
+                    { text: 'sách vở', isCorrect: false },
+                    { text: 'chăm ngoan', isCorrect: false }
+                ],
+                explanation: '"viết" là từ chỉ hoạt động của học sinh trong giờ học.'
+            },
+            {
+                type: 'arrange',
+                prompt: 'Sắp xếp các mảnh từ thành câu nêu hoạt động của bạn Lan:',
+                hint: 'Bạn Lan chăm sóc cây ngoài vườn',
+                pieces: ['Bạn Lan', 'đang tưới cây', 'ngoài vườn.'],
+                correctSentence: 'Bạn Lan đang tưới cây ngoài vườn.'
+            },
+            {
+                type: 'fill',
+                prompt: 'Chọn từ chỉ hoạt động của chú cá vàng:',
+                sentenceBefore: 'Chú cá vàng đang',
+                sentenceAfter: 'tung tăng trong bể nước.',
+                options: [
+                    { text: 'hoa cúc', isCorrect: false },
+                    { text: 'bơi', isCorrect: true },
+                    { text: 'bàn ghế', isCorrect: false }
+                ],
+                explanation: '"bơi" là từ chỉ sự vận động của chú cá vàng dưới nước.'
+            },
+            {
+                type: 'arrange',
+                prompt: 'Ghép các mảnh từ để kể về hoạt động của chú cá vàng:',
+                hint: 'Chú cá vàng di chuyển trong bể',
+                pieces: ['Chú cá vàng', 'đang bơi', 'trong bể.'],
+                correctSentence: 'Chú cá vàng đang bơi trong bể.'
+            }
+        ];
+
+        // Ngân hàng câu hỏi Thử thách 3: Đấu trường trắc nghiệm (10 câu)
+        const QUIZ_BANK = [
+            {
+                q: 'Từ chỉ hoạt động là những từ chỉ gì?',
+                options: [
+                    'Chỉ tên gọi của đồ vật, cây cối xung quanh',
+                    'Chỉ sự vận động, hành động của người hoặc vật mà mắt ta có thể nhìn thấy được',
+                    'Chỉ màu sắc, hình dáng của sự vật'
+                ],
+                answer: 1,
+                explain: 'Từ chỉ hoạt động là những từ chỉ sự vận động, hành động của người hoặc vật mà mắt ta có thể nhìn thấy được.'
+            },
+            {
+                q: 'Dòng nào sau đây gồm toàn các từ chỉ hoạt động?',
+                options: [
+                    'đi, chạy, nhảy, đọc, viết',
+                    'bàn ghế, đọc, viết, con mèo',
+                    'cây bàng, hoa hồng, tưới cây, bay'
+                ],
+                answer: 0,
+                explain: 'Đi, chạy, nhảy, đọc, viết đều là các từ chỉ hoạt động.'
+            },
+            {
+                q: 'Tìm từ chỉ hoạt động trong câu: "Bé đang quét nhà giúp mẹ."',
+                options: ['bé', 'quét nhà', 'mẹ'],
+                answer: 1,
+                explain: '"quét nhà" là từ chỉ việc làm, hành động của bé.'
+            },
+            {
+                q: 'Từ nào KHÔNG thuộc nhóm từ chỉ hoạt động: "nói, cười, bay, bơi, cặp sách"?',
+                options: ['cười', 'bơi', 'cặp sách'],
+                answer: 2,
+                explain: 'Nói, cười, bay, bơi là từ chỉ hoạt động; còn "cặp sách" là từ chỉ đồ vật (sự vật).'
+            },
+            {
+                q: 'Câu nêu hoạt động (kiểu câu Ai làm gì?) dùng để làm gì?',
+                options: [
+                    'Dùng để kể về hành động, việc làm của người hoặc vật',
+                    'Dùng để giới thiệu tên tuổi, nghề nghiệp của một người',
+                    'Dùng để hỏi đường đi'
+                ],
+                answer: 0,
+                explain: 'Câu nêu hoạt động (kiểu câu Ai làm gì?) dùng để kể về hành động, việc làm của người hoặc vật.'
+            },
+            {
+                q: 'Câu nào dưới đây là câu nêu hoạt động (kiểu câu Ai làm gì?)?',
+                options: [
+                    'Em là học sinh lớp 2.',
+                    'Đàn chim đang bay về phương nam.',
+                    'Mẹ em là bác sĩ.'
+                ],
+                answer: 1,
+                explain: '"Đàn chim đang bay về phương nam." kể về hoạt động "bay" của đàn chim (Kiểu câu Ai làm gì?).'
+            },
+            {
+                q: 'Trong câu "Bạn Nam đang đọc truyện tranh.", từ nào là từ chỉ hoạt động?',
+                options: ['bạn Nam', 'đọc', 'truyện tranh'],
+                answer: 1,
+                explain: '"đọc" là từ chỉ hoạt động của bạn Nam.'
+            },
+            {
+                q: 'Bộ phận trả lời cho câu hỏi "Làm gì?" trong câu "Bé đang quét nhà giúp mẹ." là:',
+                options: ['Bé', 'đang quét nhà giúp mẹ', 'mẹ'],
+                answer: 1,
+                explain: 'Trong kiểu câu "Ai làm gì?", bộ phận "đang quét nhà giúp mẹ" trả lời cho câu hỏi "Làm gì?".'
+            },
+            {
+                q: 'Từ nào chỉ hoạt động của các bạn nhỏ trong giờ ra chơi?',
+                options: ['nhảy dây', 'sân trường', 'thầy giáo'],
+                answer: 0,
+                explain: '"nhảy dây" là từ chỉ hoạt động vui chơi của các bạn nhỏ.'
+            },
+            {
+                q: 'Có mấy từ chỉ hoạt động trong nhóm từ: "tưới cây, quét nhà, bông hoa, cười"?',
+                options: ['2 từ', '3 từ (tưới cây, quét nhà, cười)', '4 từ'],
+                answer: 1,
+                explain: 'Có 3 từ chỉ hoạt động là: tưới cây, quét nhà, cười. Còn "bông hoa" là từ chỉ sự vật.'
+            },
+            {
+                q: 'Điền từ chỉ hoạt động thích hợp: "Cô giáo đang ... bài cho chúng em."',
+                options: ['giảng', 'phấn trắng', 'bảng đen'],
+                answer: 0,
+                explain: '"giảng" (giảng bài) là từ chỉ hoạt động của cô giáo.'
+            },
+            {
+                q: 'Câu nào kể về hoạt động của con vật?',
+                options: [
+                    'Chú gà trống đang gáy vang ò ó o.',
+                    'Chú gà trống là đồng hồ báo thức của nhà em.',
+                    'Bộ lông của chú gà trống rất sặc sỡ.'
+                ],
+                answer: 0,
+                explain: '"Chú gà trống đang gáy vang ò ó o." nêu hoạt động "gáy" của chú gà trống.'
+            }
+        ];
+
+        /* ==========================================================================
+           3. QUẢN LÝ TRẠNG THÁI ỨNG DỤNG
+           ========================================================================== */
+        let state = {
+            currentScreen: 'home',
+            totalStars: parseInt(localStorage.getItem('tv2_action_stars') || '0', 10),
+            // State cho Thử thách 1 (Phân loại)
+            sortItems: [],
+            sortIndex: 0,
+            sortScore: 0,
+            // State cho Thử thách 2 (Câu Ai làm gì?)
+            sentenceList: [],
+            sentenceIndex: 0,
+            sentenceScore: 0,
+            arrangedWords: [],
+            availablePieces: [],
+            sentenceAnswered: false,
+            // State cho Thử thách 3 (Trắc nghiệm 10 câu)
+            quizList: [],
+            quizIndex: 0,
+            quizScore: 0,
+            quizStreak: 0,
+            quizMaxStreak: 0,
+            quizAnswered: false
+        };
+
+        function addStars(amount) {
+            state.totalStars += amount;
+            localStorage.setItem('tv2_action_stars', state.totalStars.toString());
+            const starEl = document.getElementById('total-stars');
+            starEl.textContent = state.totalStars;
+            starEl.parentElement.classList.add('scale-110');
+            setTimeout(() => starEl.parentElement.classList.remove('scale-110'), 250);
+        }
+
+        function showModal(emoji, title, message) {
+            document.getElementById('modal-emoji').textContent = emoji;
+            document.getElementById('modal-title').textContent = title;
+            document.getElementById('modal-message').textContent = message;
+            const modal = document.getElementById('custom-modal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function closeModal() {
+            playClickSound();
+            const modal = document.getElementById('custom-modal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        function shuffleArray(arr) {
+            const copy = [...arr];
+            for (let i = copy.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [copy[i], copy[j]] = [copy[j], copy[i]];
+            }
+            return copy;
+        }
+
+        function navigateTo(screen) {
+            playClickSound();
+            state.currentScreen = screen;
+            const homeBtn = document.getElementById('home-btn');
+            if (screen === 'home') {
+                homeBtn.classList.add('hidden');
+            } else {
+                homeBtn.classList.remove('hidden');
+            }
+
+            if (screen === 'home') renderHome();
+            else if (screen === 'study') renderStudyCorner();
+            else if (screen === 'game1') startSortingGame();
+            else if (screen === 'game2') startSentenceGame();
+            else if (screen === 'game3') startQuizGame();
+        }
+
+        /* ==========================================================================
+           4. MÀN HÌNH CHÍNH (HOME MENU)
+           ========================================================================== */
+        function renderHome() {
+            const container = document.getElementById('app-container');
+            container.innerHTML = `
+                <div class="animate-pop">
+                    <!-- Banner chào mừng -->
+                    <div class="bg-white/95 rounded-3xl p-6 sm:p-8 shadow-lg border-4 border-emerald-300 mb-8 text-center relative overflow-hidden">
+                        <div class="inline-block bg-emerald-100 text-emerald-800 font-bold px-4 py-1 rounded-full text-sm mb-3 border border-emerald-300">
+                            ✨ Chương trình Tiếng Việt Lớp 2 ✨
+                        </div>
+                        <h2 class="font-display font-black text-2xl sm:text-4xl text-slate-800 mb-3">
+                            Khám Phá <span class="text-emerald-600">Từ Chỉ Hoạt Động</span> & <span class="text-sky-600">Câu "Ai Làm Gì?"</span>
+                        </h2>
+                        <p class="text-slate-600 font-semibold text-base sm:text-lg max-w-2xl mx-auto">
+                            Cùng xem sổ tay kiến thức và chinh phục 3 thử thách thú vị để rinh thật nhiều ngôi sao thưởng nhé!
+                        </p>
+                    </div>
+
+                    <!-- Lưới 4 thẻ chức năng chính -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5 sm:gap-6">
+                        <!-- Thẻ 1: Góc Ôn Tập -->
+                        <button onclick="navigateTo('study')" class="bg-gradient-to-br from-teal-400 to-emerald-500 text-white rounded-3xl p-6 text-left btn-3d border-4 border-teal-200 flex items-center gap-5 group">
+                            <div class="w-16 h-16 sm:w-20 sm:h-20 bg-white/25 rounded-2xl flex items-center justify-center text-4xl sm:text-5xl shrink-0 group-hover:scale-110 transition-transform">
+                                📖
+                            </div>
+                            <div>
+                                <span class="inline-block bg-white/25 text-xs font-extrabold uppercase tracking-wider px-2.5 py-0.5 rounded-full mb-1">Bước 1 • Sổ tay kiến thức</span>
+                                <h3 class="font-display font-black text-xl sm:text-2xl mb-1">Góc Ôn Tập</h3>
+                                <p class="text-teal-50 font-semibold text-sm sm:text-base">Ghi nhớ Từ chỉ hoạt động & Câu nêu hoạt động (Ai làm gì?)</p>
+                            </div>
+                        </button>
+
+                        <!-- Thẻ 2: Thử thách 1 -->
+                        <button onclick="navigateTo('game1')" class="bg-gradient-to-br from-sky-400 to-blue-600 text-white rounded-3xl p-6 text-left btn-3d border-4 border-sky-200 flex items-center gap-5 group">
+                            <div class="w-16 h-16 sm:w-20 sm:h-20 bg-white/25 rounded-2xl flex items-center justify-center text-4xl sm:text-5xl shrink-0 group-hover:scale-110 transition-transform">
+                                🧺
+                            </div>
+                            <div>
+                                <span class="inline-block bg-white/25 text-xs font-extrabold uppercase tracking-wider px-2.5 py-0.5 rounded-full mb-1">Thử thách 1</span>
+                                <h3 class="font-display font-black text-xl sm:text-2xl mb-1">Săn Tìm Từ Chỉ Hoạt Động</h3>
+                                <p class="text-sky-50 font-semibold text-sm sm:text-base">Phân biệt Từ chỉ hoạt động và Từ chỉ sự vật qua kéo thả / chạm</p>
+                            </div>
+                        </button>
+
+                        <!-- Thẻ 3: Thử thách 2 -->
+                        <button onclick="navigateTo('game2')" class="bg-gradient-to-br from-amber-400 to-orange-500 text-white rounded-3xl p-6 text-left btn-3d border-4 border-amber-200 flex items-center gap-5 group">
+                            <div class="w-16 h-16 sm:w-20 sm:h-20 bg-white/25 rounded-2xl flex items-center justify-center text-4xl sm:text-5xl shrink-0 group-hover:scale-110 transition-transform">
+                                🧩
+                            </div>
+                            <div>
+                                <span class="inline-block bg-white/25 text-xs font-extrabold uppercase tracking-wider px-2.5 py-0.5 rounded-full mb-1">Thử thách 2</span>
+                                <h3 class="font-display font-black text-xl sm:text-2xl mb-1">Chuyên Gia Câu "Ai Làm Gì?"</h3>
+                                <p class="text-amber-50 font-semibold text-sm sm:text-base">Điền từ chỉ hoạt động vào chỗ trống & ghép câu hoàn chỉnh</p>
+                            </div>
+                        </button>
+
+                        <!-- Thẻ 4: Thử thách 3 -->
+                        <button onclick="navigateTo('game3')" class="bg-gradient-to-br from-fuchsia-500 to-purple-600 text-white rounded-3xl p-6 text-left btn-3d border-4 border-fuchsia-200 flex items-center gap-5 group">
+                            <div class="w-16 h-16 sm:w-20 sm:h-20 bg-white/25 rounded-2xl flex items-center justify-center text-4xl sm:text-5xl shrink-0 group-hover:scale-110 transition-transform">
+                                🏆
+                            </div>
+                            <div>
+                                <span class="inline-block bg-white/25 text-xs font-extrabold uppercase tracking-wider px-2.5 py-0.5 rounded-full mb-1">Thử thách 3</span>
+                                <h3 class="font-display font-black text-xl sm:text-2xl mb-1">Đấu Trường Trắc Nghiệm</h3>
+                                <p class="text-fuchsia-50 font-semibold text-sm sm:text-base">10 câu hỏi tổng hợp tốc độ, tích chuỗi đúng nhận Cúp Vàng!</p>
+                            </div>
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        /* ==========================================================================
+           5. GÓC ÔN TẬP (SỔ TAY KIẾN THỨC TRỰC QUAN)
+           ========================================================================== */
+        function renderStudyCorner() {
+            const container = document.getElementById('app-container');
+            container.innerHTML = `
+                <div class="animate-pop space-y-6">
+                    <div class="flex flex-wrap items-center justify-between gap-3 bg-white/95 p-5 rounded-3xl shadow-md border-4 border-emerald-300">
+                        <div class="flex items-center gap-3">
+                            <span class="text-4xl">📖</span>
+                            <div>
+                                <h2 class="font-display font-black text-2xl sm:text-3xl text-emerald-700">Sổ Tay Kiến Thức Lớp 2</h2>
+                                <p class="text-slate-600 font-semibold text-sm sm:text-base">Bé hãy đọc kỹ ghi nhớ trước khi bước vào các thử thách nhé!</p>
+                            </div>
+                        </div>
+                        <button onclick="navigateTo('game1')" class="bg-sky-500 hover:bg-sky-600 text-white font-display font-bold px-5 py-3 rounded-2xl btn-3d text-base">
+                            Vào Thử thách 1! 🚀
+                        </button>
+                    </div>
+
+                    <!-- Phần 1: Từ chỉ hoạt động -->
+                    <div class="bg-white/95 rounded-3xl p-6 sm:p-7 shadow-lg border-4 border-emerald-200">
+                        <div class="flex items-center gap-3 mb-4">
+                            <span class="w-10 h-10 rounded-2xl bg-emerald-500 text-white font-display font-black text-xl flex items-center justify-center shadow">1</span>
+                            <h3 class="font-display font-black text-2xl text-emerald-800">Từ chỉ hoạt động</h3>
+                        </div>
+
+                        <div class="bg-emerald-50 border-2 border-emerald-200 rounded-2xl p-4 mb-5">
+                            <p class="text-base sm:text-lg font-bold text-slate-800">
+                                💡 <span class="text-emerald-700">Khái niệm:</span> Là những từ chỉ <span class="underline decoration-amber-400 decoration-4">sự vận động, hành động</span> của người hoặc vật mà <span class="underline decoration-sky-400 decoration-4">mắt ta có thể nhìn thấy được</span>.
+                            </p>
+                        </div>
+
+                        <div>
+                            <p class="font-display font-extrabold text-emerald-800 text-lg mb-3">🌟 Ví dụ minh họa:</p>
+                            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+                                ${ACTION_EXAMPLES.map(item => `
+                                    <div class="bg-gradient-to-br from-emerald-50 to-teal-50 border-2 border-emerald-200 rounded-2xl p-3 flex items-center gap-3 shadow-sm">
+                                        <span class="text-3xl">${item.icon}</span>
+                                        <span class="font-display font-extrabold text-lg text-slate-800">${item.word}</span>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Phần 2: Câu nêu hoạt động (Kiểu câu Ai làm gì?) -->
+                    <div class="bg-white/95 rounded-3xl p-6 sm:p-7 shadow-lg border-4 border-sky-200">
+                        <div class="flex items-center gap-3 mb-4">
+                            <span class="w-10 h-10 rounded-2xl bg-sky-500 text-white font-display font-black text-xl flex items-center justify-center shadow">2</span>
+                            <h3 class="font-display font-black text-2xl text-sky-800">Câu nêu hoạt động (Kiểu câu Ai làm gì?)</h3>
+                        </div>
+
+                        <div class="bg-sky-50 border-2 border-sky-200 rounded-2xl p-4 mb-5">
+                            <p class="font-display font-extrabold text-sky-800 text-lg mb-1">🎯 Mục đích:</p>
+                            <p class="text-slate-700 font-semibold text-base sm:text-lg">Kể về <b>hành động, việc làm</b> của người hoặc vật.</p>
+                        </div>
+
+                        <div class="bg-gradient-to-r from-sky-50 to-indigo-50 border-2 border-sky-200 rounded-2xl p-5">
+                            <p class="font-display font-extrabold text-sky-900 text-lg mb-3">🌟 Ví dụ mẫu (Tô nổi bật từ chỉ hoạt động):</p>
+                            <div class="space-y-3">
+                                <div class="bg-white rounded-2xl p-4 shadow-sm flex flex-wrap items-center gap-2 text-lg sm:text-xl font-bold border border-sky-100">
+                                    <span>Đàn chim đang</span>
+                                    <span class="bg-amber-400 text-slate-900 px-3 py-1 rounded-xl font-black shadow-sm">bay</span>
+                                    <span>về phương nam.</span>
+                                </div>
+                                <div class="bg-white rounded-2xl p-4 shadow-sm flex flex-wrap items-center gap-2 text-lg sm:text-xl font-bold border border-sky-100">
+                                    <span>Bé đang</span>
+                                    <span class="bg-amber-400 text-slate-900 px-3 py-1 rounded-xl font-black shadow-sm">quét nhà</span>
+                                    <span>giúp mẹ.</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        /* ==========================================================================
+           6. THỬ THÁCH 1: SĂN TÌM TỪ CHỈ HOẠT ĐỘNG (PHÂN LOẠI HOẠT ĐỘNG VS SỰ VẬT)
+           ========================================================================== */
+        function startSortingGame() {
+            // Chọn ngẫu nhiên 10 từ từ kho từ vựng
+            state.sortItems = shuffleArray(WORD_SORT_POOL).slice(0, 10);
+            state.sortIndex = 0;
+            state.sortScore = 0;
+            renderSortingGame();
+        }
+
+        function renderSortingGame() {
+            const container = document.getElementById('app-container');
+
+            // Màn hình hoàn thành Thử thách 1
+            if (state.sortIndex >= state.sortItems.length) {
+                playVictorySound();
+                triggerConfetti();
+                addStars(state.sortScore * 2);
+                container.innerHTML = `
+                    <div class="bg-white/95 rounded-3xl p-8 text-center shadow-xl border-4 border-sky-300 max-w-xl mx-auto animate-pop">
+                        <div class="text-7xl mb-4 animate-bounce">🎉</div>
+                        <h2 class="font-display font-black text-3xl text-sky-700 mb-2">Tuyệt Vời Quá Bé Ơi!</h2>
+                        <p class="text-slate-600 font-bold text-lg mb-6">
+                            Bé đã phân loại chính xác <span class="text-emerald-600 text-2xl font-black">${state.sortScore}/${state.sortItems.length}</span> thẻ từ vựng!
+                        </p>
+                        <div class="bg-amber-100 border-2 border-amber-300 rounded-2xl p-4 mb-6 inline-block">
+                            <span class="font-display font-black text-amber-800 text-xl">+${state.sortScore * 2} ⭐ Ngôi sao thưởng!</span>
+                        </div>
+                        <div class="flex flex-col sm:flex-row gap-3 justify-center">
+                            <button onclick="startSortingGame()" class="px-6 py-3.5 bg-sky-500 hover:bg-sky-600 text-white font-display font-bold rounded-2xl btn-3d text-lg">
+                                🔄 Chơi lại thử thách này
+                            </button>
+                            <button onclick="navigateTo('game2')" class="px-6 py-3.5 bg-amber-500 hover:bg-amber-600 text-white font-display font-bold rounded-2xl btn-3d text-lg">
+                                Qua Thử thách 2 ➡️
+                            </button>
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+
+            const currentWord = state.sortItems[state.sortIndex];
+            const progressPercent = Math.round((state.sortIndex / state.sortItems.length) * 100);
+
+            container.innerHTML = `
+                <div class="animate-pop">
+                    <!-- Thanh tiến trình -->
+                    <div class="bg-white/90 rounded-2xl p-4 mb-6 shadow-sm border-2 border-sky-200 flex items-center justify-between gap-4">
+                        <div class="font-display font-extrabold text-sky-800 text-base sm:text-lg">
+                            🧺 Thẻ từ <span class="text-sky-600">${state.sortIndex + 1}</span>/${state.sortItems.length}
+                        </div>
+                        <div class="flex-grow bg-slate-200 h-4 rounded-full overflow-hidden max-w-md">
+                            <div class="bg-gradient-to-r from-sky-400 to-emerald-400 h-full transition-all duration-300" style="width: ${progressPercent}%"></div>
+                        </div>
+                        <div class="font-display font-extrabold text-emerald-600 text-base sm:text-lg">
+                            Đúng: ${state.sortScore}
+                        </div>
+                    </div>
+
+                    <!-- Thẻ từ vựng hiện tại (Hỗ trợ Kéo thả và Chạm chọn) -->
+                    <div class="text-center mb-8">
+                        <p class="text-slate-600 font-bold mb-3 text-sm sm:text-base">
+                            👇 Kéo thẻ từ bên dưới vào đúng giỏ (hoặc chạm vào giỏ tương ứng):
+                        </p>
+                        <div id="draggable-word-card"
+                             draggable="true"
+                             ondragstart="handleDragStart(event)"
+                             class="inline-flex flex-col items-center justify-center bg-white border-4 border-amber-400 rounded-3xl px-10 py-6 shadow-xl cursor-grab active:cursor-grabbing animate-float mx-auto min-w-[230px]">
+                            <span class="text-6xl mb-2">${currentWord.emoji}</span>
+                            <span class="font-display font-black text-3xl text-slate-800">${currentWord.word}</span>
+                        </div>
+                        <div id="sort-feedback" class="min-h-[36px] mt-3 font-display font-extrabold text-base sm:text-lg px-2"></div>
+                    </div>
+
+                    <!-- 2 Giỏ phân loại: Từ chỉ hoạt động vs Từ chỉ sự vật -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 max-w-3xl mx-auto">
+                        ${BASKETS.map(basket => `
+                            <button onclick="checkSortAnswer('${basket.id}')"
+                                    ondragover="handleDragOver(event)"
+                                    ondragleave="handleDragLeave(event)"
+                                    ondrop="handleDrop(event, '${basket.id}')"
+                                    class="${basket.color} border-4 border-dashed rounded-3xl p-6 flex flex-col items-center justify-center text-center btn-3d min-h-[165px] transition-all">
+                                <span class="text-5xl mb-2 pointer-events-none">${basket.icon}</span>
+                                <span class="font-display font-black text-xl sm:text-2xl mb-1 pointer-events-none">${basket.name}</span>
+                                <span class="text-xs sm:text-sm font-bold opacity-80 pointer-events-none">${basket.desc}</span>
+                            </button>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        function handleDragStart(e) {
+            e.dataTransfer.setData('text/plain', 'word');
+        }
+
+        function handleDragOver(e) {
+            e.preventDefault();
+            e.currentTarget.classList.add('drop-zone-active');
+        }
+
+        function handleDragLeave(e) {
+            e.currentTarget.classList.remove('drop-zone-active');
+        }
+
+        function handleDrop(e, basketId) {
+            e.preventDefault();
+            e.currentTarget.classList.remove('drop-zone-active');
+            checkSortAnswer(basketId);
+        }
+
+        let isCheckingSort = false;
+        function checkSortAnswer(selectedBasketId) {
+            if (isCheckingSort) return;
+            const currentWord = state.sortItems[state.sortIndex];
+            const cardEl = document.getElementById('draggable-word-card');
+            const feedbackEl = document.getElementById('sort-feedback');
+
+            if (selectedBasketId === currentWord.type) {
+                isCheckingSort = true;
+                playCorrectSound();
+                state.sortScore++;
+                cardEl.classList.remove('border-amber-400');
+                cardEl.classList.add('border-emerald-500', 'bg-emerald-50', 'scale-105');
+                feedbackEl.innerHTML = `<span class="text-emerald-600">✅ Chính xác! ${currentWord.reason}</span>`;
+
+                setTimeout(() => {
+                    state.sortIndex++;
+                    isCheckingSort = false;
+                    renderSortingGame();
+                }, 1150);
+            } else {
+                playWrongSound();
+                cardEl.classList.remove('animate-shake');
+                void cardEl.offsetWidth;
+                cardEl.classList.add('animate-shake', 'border-rose-500');
+                feedbackEl.innerHTML = `<span class="text-rose-600">❌ Chưa đúng rồi! Bé hãy thử lại nhé!</span>`;
+                setTimeout(() => {
+                    cardEl.classList.remove('border-rose-500');
+                }, 600);
+            }
+        }
+
+        /* ==========================================================================
+           7. THỬ THÁCH 2: CHUYÊN GIA CÂU "AI LÀ GÌ?" (ĐIỀN TỪ & GHÉP MẢNH TỪ)
+           ========================================================================== */
+        function startSentenceGame() {
+            state.sentenceList = shuffleArray(SENTENCE_CHALLENGES);
+            state.sentenceIndex = 0;
+            state.sentenceScore = 0;
+            setupCurrentSentenceChallenge();
+        }
+
+        function setupCurrentSentenceChallenge() {
+            state.sentenceAnswered = false;
+            const item = state.sentenceList[state.sentenceIndex];
+            if (item && item.type === 'arrange') {
+                state.arrangedWords = [];
+                let shuffled = shuffleArray(item.pieces);
+                if (shuffled.join(' ') === item.pieces.join(' ') && item.pieces.length > 1) {
+                    shuffled = [...item.pieces].reverse();
+                }
+                state.availablePieces = shuffled.map((text, idx) => ({ id: idx, text, used: false }));
+            }
+            renderSentenceGame();
+        }
+
+        function renderSentenceGame() {
+            const container = document.getElementById('app-container');
+
+            if (state.sentenceIndex >= state.sentenceList.length) {
+                playVictorySound();
+                triggerConfetti();
+                addStars(state.sentenceScore * 3);
+                container.innerHTML = `
+                    <div class="bg-white/95 rounded-3xl p-8 text-center shadow-xl border-4 border-amber-300 max-w-xl mx-auto animate-pop">
+                        <div class="text-7xl mb-4 animate-bounce">🌟</div>
+                        <h2 class="font-display font-black text-3xl text-amber-700 mb-2">Chuyên Gia Xuất Sắc!</h2>
+                        <p class="text-slate-600 font-bold text-lg mb-6">
+                            Bé đã hoàn thành <span class="text-emerald-600 text-2xl font-black">${state.sentenceScore}/${state.sentenceList.length}</span> câu nêu hoạt động "Ai làm gì?"!
+                        </p>
+                        <div class="bg-amber-100 border-2 border-amber-300 rounded-2xl p-4 mb-6 inline-block">
+                            <span class="font-display font-black text-amber-800 text-xl">+${state.sentenceScore * 3} ⭐ Ngôi sao thưởng!</span>
+                        </div>
+                        <div class="flex flex-col sm:flex-row gap-3 justify-center">
+                            <button onclick="startSentenceGame()" class="px-6 py-3.5 bg-amber-500 hover:bg-amber-600 text-white font-display font-bold rounded-2xl btn-3d text-lg">
+                                🔄 Chơi lại
+                            </button>
+                            <button onclick="navigateTo('game3')" class="px-6 py-3.5 bg-purple-600 hover:bg-purple-700 text-white font-display font-bold rounded-2xl btn-3d text-lg">
+                                Qua Thử thách 3 🏆
+                            </button>
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+
+            const item = state.sentenceList[state.sentenceIndex];
+            const progressPercent = Math.round((state.sentenceIndex / state.sentenceList.length) * 100);
+
+            let challengeHtml = '';
+
+            if (item.type === 'fill') {
+                // Phần A: Điền từ chỉ hoạt động thích hợp vào chỗ trống
+                const shuffledOpts = item._shuffledOpts || (item._shuffledOpts = shuffleArray(item.options));
+                challengeHtml = `
+                    <div class="bg-amber-50 border-3 border-amber-300 rounded-2xl p-5 my-5 text-center font-display font-extrabold text-xl sm:text-2xl text-slate-800 leading-relaxed">
+                        <span>${item.sentenceBefore}</span>
+                        <span id="fill-blank-slot" class="inline-block min-w-[110px] px-4 py-1 mx-1.5 bg-white border-b-4 border-emerald-500 rounded-xl text-emerald-700">......</span>
+                        <span>${item.sentenceAfter}</span>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3.5 mt-4">
+                        ${shuffledOpts.map((opt, idx) => `
+                            <button id="sent-opt-${idx}" onclick="checkFillSentence(${idx})"
+                                    class="p-4 rounded-2xl bg-sky-50 hover:bg-sky-100 border-3 border-sky-200 font-display font-black text-lg sm:text-xl text-slate-800 btn-3d text-center">
+                                ${opt.text}
+                            </button>
+                        `).join('')}
+                    </div>
+                `;
+            } else {
+                // Phần B: Ghép mảnh từ tạo câu nêu hoạt động hoàn chỉnh
+                challengeHtml = `
+                    <div class="mt-4">
+                        <div class="inline-block bg-amber-100 text-amber-800 font-bold px-3.5 py-1 rounded-full text-sm mb-4">
+                            💡 Gợi ý: ${item.hint}
+                        </div>
+
+                        <!-- Khung chứa câu bé đang ghép -->
+                        <div class="min-h-[82px] bg-slate-100 border-3 border-dashed border-amber-400 rounded-2xl p-3.5 flex flex-wrap items-center justify-center gap-2.5 mb-5">
+                            ${state.arrangedWords.length === 0
+                                ? `<span class="text-slate-400 font-bold text-base">Chạm vào các mảnh từ bên dưới để xếp thành câu...</span>`
+                                : state.arrangedWords.map((piece, idx) => `
+                                    <button onclick="removeWordPiece(${idx})" class="bg-amber-400 hover:bg-amber-500 text-slate-900 font-display font-black text-lg sm:text-xl px-4 py-2.5 rounded-xl btn-3d">
+                                        ${piece.text}
+                                    </button>
+                                `).join('')
+                            }
+                        </div>
+
+                        <!-- Các mảnh từ rời -->
+                        <div class="flex flex-wrap items-center justify-center gap-3 mb-6">
+                            ${state.availablePieces.map(piece => `
+                                <button onclick="selectWordPiece(${piece.id})"
+                                        ${piece.used ? 'disabled' : ''}
+                                        class="${piece.used ? 'opacity-30 cursor-not-allowed bg-slate-200 text-slate-400' : 'bg-white hover:bg-sky-50 text-sky-800 border-2 border-sky-300 btn-3d'} font-display font-black text-lg sm:text-xl px-5 py-3 rounded-2xl">
+                                    ${piece.text}
+                                </button>
+                            `).join('')}
+                        </div>
+
+                        <div class="flex justify-center gap-3">
+                            <button onclick="clearArrangedWords()" class="px-5 py-3 bg-slate-200 hover:bg-slate-300 text-slate-700 font-display font-bold rounded-2xl btn-3d">
+                                ↺ Xếp lại
+                            </button>
+                            <button onclick="checkArrangedSentence()" class="px-7 py-3 bg-emerald-500 hover:bg-emerald-600 text-white font-display font-black text-lg rounded-2xl btn-3d">
+                                Kiểm tra câu ✅
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }
+
+            container.innerHTML = `
+                <div class="animate-pop max-w-3xl mx-auto">
+                    <!-- Thanh tiến độ -->
+                    <div class="bg-white/90 rounded-2xl p-4 mb-6 shadow-sm border-2 border-amber-200 flex items-center justify-between gap-4">
+                        <div class="font-display font-extrabold text-amber-800 text-base sm:text-lg">
+                            🧩 Câu <span class="text-amber-600">${state.sentenceIndex + 1}</span>/${state.sentenceList.length}
+                        </div>
+                        <div class="flex-grow bg-slate-200 h-4 rounded-full overflow-hidden max-w-md">
+                            <div class="bg-gradient-to-r from-amber-400 to-orange-500 h-full transition-all duration-300" style="width: ${progressPercent}%"></div>
+                        </div>
+                        <div class="font-display font-extrabold text-emerald-600 text-base sm:text-lg">
+                            Điểm: ${state.sentenceScore}
+                        </div>
+                    </div>
+
+                    <!-- Khung câu hỏi chính -->
+                    <div class="bg-white/95 rounded-3xl p-6 sm:p-8 shadow-xl border-4 border-amber-300">
+                        <span class="inline-block bg-orange-100 text-orange-700 font-extrabold text-xs uppercase tracking-wider px-3 py-1 rounded-full mb-2">
+                            ${item.type === 'fill' ? 'Phần A • Điền từ chỉ hoạt động' : 'Phần B • Ghép câu Ai làm gì?'}
+                        </span>
+                        <h3 class="font-display font-black text-xl sm:text-2xl text-slate-800 leading-snug">
+                            ${item.prompt}
+                        </h3>
+
+                        ${challengeHtml}
+
+                        <!-- Khu vực phản hồi & nút tiếp theo -->
+                        <div id="sentence-feedback-box" class="hidden mt-6 p-4 rounded-2xl border-2"></div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function checkFillSentence(optIdx) {
+            if (state.sentenceAnswered) return;
+            const item = state.sentenceList[state.sentenceIndex];
+            const chosen = item._shuffledOpts[optIdx];
+            const btn = document.getElementById(`sent-opt-${optIdx}`);
+            const slot = document.getElementById('fill-blank-slot');
+            const fbBox = document.getElementById('sentence-feedback-box');
+
+            state.sentenceAnswered = true;
+            fbBox.classList.remove('hidden');
+            slot.textContent = chosen.text;
+
+            if (chosen.isCorrect) {
+                playCorrectSound();
+                state.sentenceScore++;
+                slot.classList.add('bg-emerald-100', 'text-emerald-800');
+                btn.classList.remove('bg-sky-50', 'border-sky-200');
+                btn.classList.add('bg-emerald-100', 'border-emerald-500', 'text-emerald-900');
+                fbBox.className = 'mt-6 p-4 rounded-2xl border-2 bg-emerald-50 border-emerald-300 text-emerald-800';
+                fbBox.innerHTML = `
+                    <p class="font-display font-black text-lg mb-1">🎉 Chính xác! Hoan hô bé!</p>
+                    <p class="font-semibold text-sm sm:text-base mb-3">${item.explanation}</p>
+                    <button onclick="nextSentenceChallenge()" class="px-6 py-2.5 bg-emerald-500 hover:bg-emerald-600 text-white font-display font-bold rounded-xl btn-3d">
+                        Câu tiếp theo ➡️
+                    </button>
+                `;
+            } else {
+                playWrongSound();
+                slot.classList.add('bg-rose-100', 'text-rose-800');
+                btn.classList.remove('bg-sky-50', 'border-sky-200');
+                btn.classList.add('bg-rose-100', 'border-rose-500', 'text-rose-900', 'animate-shake');
+                fbBox.className = 'mt-6 p-4 rounded-2xl border-2 bg-rose-50 border-rose-300 text-rose-800';
+                fbBox.innerHTML = `
+                    <p class="font-display font-black text-lg mb-1">😅 Chưa đúng rồi!</p>
+                    <p class="font-semibold text-sm sm:text-base mb-3">${item.explanation}</p>
+                    <button onclick="nextSentenceChallenge()" class="px-6 py-2.5 bg-sky-500 hover:bg-sky-600 text-white font-display font-bold rounded-xl btn-3d">
+                        Tiếp tục ➡️
+                    </button>
+                `;
+            }
+        }
+
+        function selectWordPiece(id) {
+            if (state.sentenceAnswered) return;
+            playClickSound();
+            const piece = state.availablePieces.find(p => p.id === id);
+            if (piece && !piece.used) {
+                piece.used = true;
+                state.arrangedWords.push(piece);
+                renderSentenceGame();
+            }
+        }
+
+        function removeWordPiece(arrangedIdx) {
+            if (state.sentenceAnswered) return;
+            playClickSound();
+            const removed = state.arrangedWords.splice(arrangedIdx, 1)[0];
+            const orig = state.availablePieces.find(p => p.id === removed.id);
+            if (orig) orig.used = false;
+            renderSentenceGame();
+        }
+
+        function clearArrangedWords() {
+            if (state.sentenceAnswered) return;
+            playClickSound();
+            state.arrangedWords = [];
+            state.availablePieces.forEach(p => p.used = false);
+            renderSentenceGame();
+        }
+
+        function checkArrangedSentence() {
+            if (state.sentenceAnswered) return;
+            const item = state.sentenceList[state.sentenceIndex];
+            if (state.arrangedWords.length < item.pieces.length) {
+                showModal('🧩', 'Chưa đủ mảnh từ!', 'Bé hãy chọn hết tất cả các mảnh từ bên dưới để ghép thành câu hoàn chỉnh nhé!');
+                return;
+            }
+
+            const userSentence = state.arrangedWords.map(p => p.text).join(' ');
+            const fbBox = document.getElementById('sentence-feedback-box');
+            fbBox.classList.remove('hidden');
+
+            if (userSentence === item.correctSentence) {
+                state.sentenceAnswered = true;
+                playCorrectSound();
+                state.sentenceScore++;
+                fbBox.className = 'mt-6 p-4 rounded-2xl border-2 bg-emerald-50 border-emerald-300 text-emerald-800';
+                fbBox.innerHTML = `
+                    <p class="font-display font-black text-lg mb-1">🎉 Giỏi quá! Bé ghép đúng câu: "${item.correctSentence}"</p>
+                    <button onclick="nextSentenceChallenge()" class="mt-2 px-6 py-2.5 bg-emerald-500 hover:bg-emerald-600 text-white font-display font-bold rounded-xl btn-3d">
+                        Câu tiếp theo ➡️
+                    </button>
+                `;
+            } else {
+                playWrongSound();
+                fbBox.className = 'mt-6 p-4 rounded-2xl border-2 bg-rose-50 border-rose-300 text-rose-800 animate-shake';
+                fbBox.innerHTML = `
+                    <p class="font-display font-black text-lg">❌ Thứ tự chưa hợp lý lắm! Bé bấm "Xếp lại" và thử sắp xếp theo mẫu "Ai / làm gì?" nhé.</p>
+                `;
+            }
+        }
+
+        function nextSentenceChallenge() {
+            playClickSound();
+            state.sentenceIndex++;
+            if (state.sentenceIndex < state.sentenceList.length) {
+                setupCurrentSentenceChallenge();
+            } else {
+                renderSentenceGame();
+            }
+        }
+
+        /* ==========================================================================
+           8. THỬ THÁCH 3: ĐẤU TRƯỜNG TRẮC NGHIỆM (10 CÂU + STREAK + TRAO CÚP)
+           ========================================================================== */
+        function startQuizGame() {
+            state.quizList = shuffleArray(QUIZ_BANK).slice(0, 10);
+            state.quizIndex = 0;
+            state.quizScore = 0;
+            state.quizStreak = 0;
+            state.quizMaxStreak = 0;
+            state.quizAnswered = false;
+            renderQuizGame();
+        }
+
+        function renderQuizGame() {
+            const container = document.getElementById('app-container');
+
+            // Màn hình trao cúp / huy hiệu tổng kết
+            if (state.quizIndex >= state.quizList.length) {
+                playVictorySound();
+                triggerConfetti();
+                const bonusStars = state.quizScore * 3 + state.quizMaxStreak;
+                addStars(bonusStars);
+
+                let badgeIcon = '🥉';
+                let badgeTitle = 'Huy Hiệu Đồng Chăm Chỉ';
+                let badgeDesc = 'Bé đã hoàn thành đấu trường! Ôn thêm một chút để đạt Cúp Vàng nhé!';
+
+                if (state.quizScore >= 9) {
+                    badgeIcon = '🏆';
+                    badgeTitle = 'Cúp Vàng Trạng Nguyên Nhí';
+                    badgeDesc = 'Quá xuất sắc! Bé nắm vững kiến thức về Từ chỉ hoạt động như một Trạng Nguyên!';
+                } else if (state.quizScore >= 7) {
+                    badgeIcon = '🥈';
+                    badgeTitle = 'Huy Hiệu Bạc Thông Thái';
+                    badgeDesc = 'Rất giỏi! Bé đã trả lời đúng hầu hết các câu hỏi!';
+                }
+
+                container.innerHTML = `
+                    <div class="bg-white/95 rounded-3xl p-7 sm:p-10 text-center shadow-2xl border-4 border-fuchsia-300 max-w-xl mx-auto animate-pop">
+                        <div class="text-8xl mb-3 animate-float">${badgeIcon}</div>
+                        <div class="inline-block bg-fuchsia-100 text-fuchsia-800 font-extrabold px-4 py-1 rounded-full text-sm mb-2">
+                            Danh hiệu đạt được
+                        </div>
+                        <h2 class="font-display font-black text-2xl sm:text-3xl text-fuchsia-700 mb-2">${badgeTitle}</h2>
+                        <p class="text-slate-600 font-semibold mb-6">${badgeDesc}</p>
+
+                        <div class="grid grid-cols-3 gap-3 mb-6">
+                            <div class="bg-sky-50 border-2 border-sky-200 rounded-2xl p-3">
+                                <div class="text-xs font-bold text-sky-600 uppercase">Số câu đúng</div>
+                                <div class="font-display font-black text-2xl text-sky-800">${state.quizScore}/10</div>
+                            </div>
+                            <div class="bg-orange-50 border-2 border-orange-200 rounded-2xl p-3">
+                                <div class="text-xs font-bold text-orange-600 uppercase">Chuỗi đúng</div>
+                                <div class="font-display font-black text-2xl text-orange-700">🔥 ${state.quizMaxStreak}</div>
+                            </div>
+                            <div class="bg-amber-50 border-2 border-amber-200 rounded-2xl p-3">
+                                <div class="text-xs font-bold text-amber-600 uppercase">Sao thưởng</div>
+                                <div class="font-display font-black text-2xl text-amber-700">+${bonusStars} ⭐</div>
+                            </div>
+                        </div>
+
+                        <div class="flex flex-col sm:flex-row gap-3 justify-center">
+                            <button onclick="startQuizGame()" class="px-6 py-3.5 bg-fuchsia-600 hover:bg-fuchsia-700 text-white font-display font-bold rounded-2xl btn-3d text-lg">
+                                🔄 Thi đấu lại
+                            </button>
+                            <button onclick="navigateTo('home')" class="px-6 py-3.5 bg-sky-500 hover:bg-sky-600 text-white font-display font-bold rounded-2xl btn-3d text-lg">
+                                🏠 Về Trang chủ
+                            </button>
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+
+            const qItem = state.quizList[state.quizIndex];
+            const progressPercent = Math.round((state.quizIndex / state.quizList.length) * 100);
+
+            container.innerHTML = `
+                <div class="animate-pop max-w-3xl mx-auto">
+                    <!-- Thanh trạng thái Đấu trường -->
+                    <div class="bg-white/90 rounded-2xl p-4 mb-6 shadow-sm border-2 border-fuchsia-200 flex flex-wrap items-center justify-between gap-3">
+                        <div class="font-display font-extrabold text-fuchsia-800 text-base sm:text-lg">
+                            🏆 Câu <span class="text-fuchsia-600">${state.quizIndex + 1}</span>/10
+                        </div>
+                        <div class="flex-grow bg-slate-200 h-4 rounded-full overflow-hidden max-w-xs sm:max-w-md">
+                            <div class="bg-gradient-to-r from-fuchsia-500 to-purple-600 h-full transition-all duration-300" style="width: ${progressPercent}%"></div>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <span class="bg-orange-100 text-orange-700 border border-orange-300 px-3 py-1 rounded-full font-display font-black text-sm">
+                                🔥 Chuỗi: ${state.quizStreak}
+                            </span>
+                            <span class="font-display font-extrabold text-emerald-600 text-base sm:text-lg">
+                                Điểm: ${state.quizScore}
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Thẻ câu hỏi trắc nghiệm -->
+                    <div class="bg-white/95 rounded-3xl p-6 sm:p-8 shadow-xl border-4 border-fuchsia-300">
+                        <h3 class="font-display font-black text-xl sm:text-2xl text-slate-800 mb-6 leading-snug">
+                            ${qItem.q}
+                        </h3>
+
+                        <div class="space-y-3.5">
+                            ${qItem.options.map((opt, idx) => `
+                                <button id="quiz-opt-${idx}" onclick="checkQuizAnswer(${idx})"
+                                        class="w-full text-left p-4 sm:p-5 rounded-2xl bg-purple-50 hover:bg-purple-100 border-3 border-purple-200 font-display font-bold text-base sm:text-xl text-slate-800 btn-3d flex items-center gap-3.5">
+                                    <span class="w-10 h-10 rounded-xl bg-fuchsia-600 text-white flex items-center justify-center font-black shrink-0">${['A', 'B', 'C'][idx]}</span>
+                                    <span>${opt}</span>
+                                </button>
+                            `).join('')}
+                        </div>
+
+                        <!-- Giải thích sau khi chọn -->
+                        <div id="quiz-feedback" class="hidden mt-6 p-4 rounded-2xl border-2"></div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function checkQuizAnswer(selectedIdx) {
+            if (state.quizAnswered) return;
+            state.quizAnswered = true;
+
+            const qItem = state.quizList[state.quizIndex];
+            const isCorrect = selectedIdx === qItem.answer;
+            const fbBox = document.getElementById('quiz-feedback');
+            fbBox.classList.remove('hidden');
+
+            qItem.options.forEach((_, idx) => {
+                const btn = document.getElementById(`quiz-opt-${idx}`);
+                btn.classList.remove('bg-purple-50', 'hover:bg-purple-100', 'border-purple-200');
+                if (idx === qItem.answer) {
+                    btn.classList.add('bg-emerald-100', 'border-emerald-500', 'text-emerald-900');
+                } else if (idx === selectedIdx && !isCorrect) {
+                    btn.classList.add('bg-rose-100', 'border-rose-500', 'text-rose-900', 'animate-shake');
+                } else {
+                    btn.classList.add('opacity-50', 'bg-slate-100', 'border-slate-200');
+                }
+            });
+
+            if (isCorrect) {
+                playCorrectSound();
+                state.quizScore++;
+                state.quizStreak++;
+                if (state.quizStreak > state.quizMaxStreak) {
+                    state.quizMaxStreak = state.quizStreak;
+                }
+                fbBox.className = 'mt-6 p-4 rounded-2xl border-2 bg-emerald-50 border-emerald-300 text-emerald-800';
+                fbBox.innerHTML = `
+                    <p class="font-display font-black text-lg mb-1">🎉 Chính xác! ${state.quizStreak >= 3 ? `Chuỗi ${state.quizStreak} câu đúng liên tiếp! 🔥` : ''}</p>
+                    <p class="font-semibold text-sm sm:text-base mb-3">${qItem.explain}</p>
+                    <button onclick="nextQuizQuestion()" class="px-6 py-2.5 bg-emerald-500 hover:bg-emerald-600 text-white font-display font-bold rounded-xl btn-3d">
+                        ${state.quizIndex === 9 ? 'Xem kết quả 🏆' : 'Câu tiếp theo ➡️'}
+                    </button>
+                `;
+            } else {
+                playWrongSound();
+                state.quizStreak = 0;
+                fbBox.className = 'mt-6 p-4 rounded-2xl border-2 bg-rose-50 border-rose-300 text-rose-800';
+                fbBox.innerHTML = `
+                    <p class="font-display font-black text-lg mb-1">😅 Tiếc quá, chưa đúng rồi!</p>
+                    <p class="font-semibold text-sm sm:text-base mb-3">${qItem.explain}</p>
+                    <button onclick="nextQuizQuestion()" class="px-6 py-2.5 bg-fuchsia-600 hover:bg-fuchsia-700 text-white font-display font-bold rounded-xl btn-3d">
+                        ${state.quizIndex === 9 ? 'Xem kết quả 🏆' : 'Câu tiếp theo ➡️'}
+                    </button>
+                `;
+            }
+        }
+
+        function nextQuizQuestion() {
+            playClickSound();
+            state.quizIndex++;
+            state.quizAnswered = false;
+            renderQuizGame();
+        }
+
+        // Khởi chạy ứng dụng khi tải trang xong
+        window.onload = function () {
+            document.getElementById('total-stars').textContent = state.totalStars;
+            renderHome();
+        };
+    </script>
+</body>
+</html>
